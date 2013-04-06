@@ -31,7 +31,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@Mod(modid="TransferPipes", name="TransferPipes", version="Build 9")
+@Mod(modid="TransferPipes", name="TransferPipes", version="Build 10")
 //channelsで登録したパケットをpackethandlerで指定したパケットハンドラに送信
 @NetworkMod(channels = {"transferpipes"}, clientSideRequired=true, serverSideRequired=true, packetHandler = PacketHandler.class)
 public class TransferPipes{
