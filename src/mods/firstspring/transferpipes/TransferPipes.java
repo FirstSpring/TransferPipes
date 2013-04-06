@@ -91,6 +91,8 @@ public class TransferPipes{
 		enableInsertion = prop.getBoolean(true);
 		cfg.save();
 		MinecraftForge.EVENT_BUS.register(this);
+		//preInitで登録しないと手持ちのアイテムのテクスチャが化ける
+		//内部でIconインスタンスを保持してしまうからだと思われ
 		pipeItemsTransfer = registerPipe(pipeItemsTransferId, PipeItemsTransfer.class, "Transfer Transport Pipe");
 		pipeLiquidsTransfer = registerPipe(pipeLiquidsTransferId, PipeLiquidsTransfer.class, "Transfer Waterproof Pipe");
 		pipePowerTransfer = registerPipe(pipePowerTransferId, PipePowerTransfer.class, "Transfer Conductive Pipe");
@@ -138,13 +140,13 @@ public class TransferPipes{
 	
 	public Item registerPipe(int id, Class<? extends Pipe> clas, String name){
 		ItemPipe pipe = BlockGenericPipe.registerPipe(id, clas);
-		//pipe.setPipesIcons(iconProvider);
 		pipe.setUnlocalizedName(clas.getSimpleName());
 		LanguageRegistry.addName(pipe, name);
 		CommonProxy.proxy.registerPipeRender(pipe.itemID);
 		return pipe;
 	}
 	
+	//テクスチャを登録するイベント
 	@ForgeSubscribe
 	@SideOnly(Side.CLIENT)
 	public void textureHook(TextureStitchEvent.Pre event){
