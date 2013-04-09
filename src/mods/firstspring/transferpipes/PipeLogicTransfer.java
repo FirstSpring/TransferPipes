@@ -3,11 +3,11 @@ package mods.firstspring.transferpipes;
 import net.minecraft.tileentity.TileEntity;
 import buildcraft.BuildCraftTransport;
 import buildcraft.transport.TileGenericPipe;
-import buildcraft.transport.pipes.PipeLogic;
+import buildcraft.transport.pipes.PipeLogicWood;
 
 
 
-public class PipeLogicTransfer extends PipeLogic {
+public class PipeLogicTransfer extends PipeLogicWood {
 
 	@Override
 	public boolean isPipeConnected(TileEntity tile) {

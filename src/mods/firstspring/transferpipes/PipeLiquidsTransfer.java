@@ -15,8 +15,6 @@ import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import buildcraft.api.core.IIconProvider;
 import buildcraft.api.core.Position;
-import buildcraft.api.transport.PipeManager;
-import buildcraft.core.DefaultProps;
 import buildcraft.core.network.TileNetworkData;
 import buildcraft.transport.IPipeTransportLiquidsHook;
 import buildcraft.transport.PipeTransportLiquids;
@@ -48,23 +46,16 @@ public class PipeLiquidsTransfer extends PipeTransfer implements IPipeTransportL
 	 * Extracts a random piece of item outside of a nearby chest.
 	 */
 
+	
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
 		if (broadcastRedstone || worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord) && !remoteMode)
 			liquidToExtract = LiquidContainerRegistry.BUCKET_VOLUME;
+		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 
-		if (liquidToExtract > 0) {
-			int orient;
-			//吸い出し対象判定
-			for(orient = 0;orient<=5;orient++){
-				if(canExtractOrientations(orient))
-					break;
-				if(orient == 5){
-					return;
-				}
-			}
-			Position pos = new Position(xCoord, yCoord, zCoord, ForgeDirection.values()[orient]);
+		if (liquidToExtract > 0 && meta < 6) {
+			Position pos = new Position(xCoord, yCoord, zCoord, ForgeDirection.getOrientation(meta));
 			pos.moveForwards(1);
 
 			TileEntity tile = worldObj.getBlockTileEntity((int) pos.x, (int) pos.y, (int) pos.z);
@@ -77,7 +68,7 @@ public class PipeLiquidsTransfer extends PipeTransfer implements IPipeTransportL
 				LiquidStack extracted = container.drain(pos.orientation.getOpposite(), liquidToExtract > flowRate ? flowRate : liquidToExtract, false);
 
 				int inserted = 0;
-				if(extracted != null) {
+				if (extracted != null) {
 					inserted = ((PipeTransportLiquids) transport).fill(pos.orientation, extracted, true);
 
 					container.drain(pos.orientation.getOpposite(), inserted, true);
@@ -98,18 +89,6 @@ public class PipeLiquidsTransfer extends PipeTransfer implements IPipeTransportL
 			return TransferPipes.iconProvider.liqA;
 		else
 			return TransferPipes.iconProvider.liq;
-	}
-
-	private boolean canExtractOrientations(int orient)
-	{
-		Position pos = new Position(xCoord, yCoord, zCoord, ForgeDirection.values()[orient]);
-		pos.moveForwards(1);
-		TileEntity tile = worldObj.getBlockTileEntity((int) pos.x, (int) pos.y, (int) pos.z);
-		if (tile instanceof ITankContainer && !(worldObj.getBlockId((int)pos.x, (int)pos.y, (int)pos.z) == DefaultProps.GENERIC_PIPE_ID)) {
-	         if (PipeManager.canExtractLiquids(this, worldObj, (int) pos.x, (int) pos.y, (int) pos.z))
-	            return true;
-		}
-		return false;
 	}
 
 	@Override

@@ -26,7 +26,6 @@ import buildcraft.api.transport.IPipedItem;
 import buildcraft.api.transport.PipeManager;
 import buildcraft.core.EntityPassiveItem;
 import buildcraft.core.utils.Utils;
-import buildcraft.energy.TileEngine;
 import buildcraft.transport.IPipeTransportItemsHook;
 import buildcraft.transport.PipeTransportItems;
 import buildcraft.transport.TileGenericPipe;
@@ -86,7 +85,7 @@ public class PipeItemsTransfer extends PipeTransfer implements IPipeTransportIte
 		}
 		return possibleOrientations;
 	}
-	//木パイプよりほぼコピペ
+	//木パイプよりコピペ
 	@Override
 	public void doWork() {
 		if (powerProvider.getEnergyStored() <= 0)
@@ -94,54 +93,47 @@ public class PipeItemsTransfer extends PipeTransfer implements IPipeTransportIte
 
 		World w = worldObj;
 
-		int orient = 0;
-		
-		//吸い出し対象判定
-		for(orient = 0;orient<=5;orient++){
-			if(canExtractOrientations(w, orient))
-				break;
-			if(orient == 5)
-				return;
-		}
-		TransferPipes.println("Orient : " + ForgeDirection.values()[orient].toString());
-		//追加ここまで
-		Position pos = new Position(xCoord, yCoord, zCoord, ForgeDirection.values()[orient]);
+		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+
+		if (meta > 5)
+			return;
+
+		Position pos = new Position(xCoord, yCoord, zCoord, ForgeDirection.getOrientation(meta));
 		pos.moveForwards(1);
 		TileEntity tile = w.getBlockTileEntity((int) pos.x, (int) pos.y, (int) pos.z);
 
 		if (tile instanceof IInventory) {
-         if (!PipeManager.canExtractItems(this, w, (int) pos.x, (int) pos.y, (int) pos.z))
-            return;
+			if (!PipeManager.canExtractItems(this, w, (int) pos.x, (int) pos.y, (int) pos.z))
+				return;
 
-         IInventory inventory = (IInventory) tile;
+			IInventory inventory = (IInventory) tile;
 
-         ItemStack[] extracted = checkExtract(inventory, true, pos.orientation.getOpposite());
-         if (extracted == null)
-            return;
+			ItemStack[] extracted = checkExtract(inventory, true, pos.orientation.getOpposite());
+			if (extracted == null)
+				return;
 
-         for(ItemStack stack : extracted) {
-            if (stack == null || stack.stackSize == 0) {
-               powerProvider.useEnergy(1, 1, false);
-                  continue;
-            }
+			for (ItemStack stack : extracted) {
+				if (stack == null || stack.stackSize == 0) {
+					powerProvider.useEnergy(1, 1, false);
+					continue;
+				}
 
-            Position entityPos = new Position(pos.x + 0.5, pos.y + Utils.getPipeFloorOf(stack), pos.z + 0.5,
-                  pos.orientation.getOpposite());
+				Position entityPos = new Position(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, pos.orientation.getOpposite());
 
-            entityPos.moveForwards(0.5);
+				entityPos.moveForwards(0.6);
 
-            IPipedItem entity = new EntityPassiveItem(w, entityPos.x, entityPos.y, entityPos.z, stack);
+				IPipedItem entity = new EntityPassiveItem(w, entityPos.x, entityPos.y, entityPos.z, stack);
 
-            ((PipeTransportItems) transport).entityEntering(entity, entityPos.orientation);
-         }
-      }
+				((PipeTransportItems) transport).entityEntering(entity, entityPos.orientation);
+			}
+		}
 	}
 	
 	public ItemStack[] checkExtract(IInventory inventory, boolean doRemove, ForgeDirection from) {
 
-		/// ISPECIALINVENTORY
+		// / ISPECIALINVENTORY
 		if (inventory instanceof ISpecialInventory) {
-			ItemStack[] stacks = ((ISpecialInventory) inventory).extractItem(doRemove, from, (int)powerProvider.getEnergyStored());
+			ItemStack[] stacks = ((ISpecialInventory) inventory).extractItem(doRemove, from, (int) powerProvider.getEnergyStored());
 			if (stacks != null && doRemove) {
 				for (ItemStack stack : stacks) {
 					if (stack != null) {
@@ -169,37 +161,41 @@ public class PipeItemsTransfer extends PipeTransfer implements IPipeTransportIte
 
 			int slotIndex = 0;
 
-			if (from == ForgeDirection.DOWN || from == ForgeDirection.UP)
+			if (from == ForgeDirection.DOWN || from == ForgeDirection.UP) {
 				slotIndex = 0;
-			else
+			} else {
 				slotIndex = 1;
+			}
 
 			ItemStack slot = inventory.getStackInSlot(slotIndex);
 
-			if (slot != null && slot.stackSize > 0)
+			if (slot != null && slot.stackSize > 0) {
 				if (doRemove)
 					return new ItemStack[] { inventory.decrStackSize(slotIndex, (int) powerProvider.useEnergy(1, slot.stackSize, true)) };
 				else
 					return new ItemStack[] { slot };
+			}
 		} else if (inventory.getSizeInventory() == 3) {
 			// This is a furnace-like inventory
 
 			int slotIndex = 0;
 
-			if (from == ForgeDirection.UP)
+			if (from == ForgeDirection.UP) {
 				slotIndex = 0;
-			else if (from == ForgeDirection.DOWN)
+			} else if (from == ForgeDirection.DOWN) {
 				slotIndex = 1;
-			else
+			} else {
 				slotIndex = 2;
+			}
 
 			ItemStack slot = inventory.getStackInSlot(slotIndex);
 
-			if (slot != null && slot.stackSize > 0)
+			if (slot != null && slot.stackSize > 0) {
 				if (doRemove)
 					return new ItemStack[] { inventory.decrStackSize(slotIndex, (int) powerProvider.useEnergy(1, slot.stackSize, true)) };
 				else
 					return new ItemStack[] { slot };
+			}
 		} else {
 			// This is a generic inventory
 			IInventory inv = Utils.getInventory(inventory);
@@ -262,18 +258,6 @@ public class PipeItemsTransfer extends PipeTransfer implements IPipeTransportIte
 	@Override
 	public void readjustSpeed(IPipedItem item) {
 		((PipeTransportItems) transport).defaultReajustSpeed(item);
-	}
-
-	private boolean canExtractOrientations(World w, int orient)
-	{
-		Position pos = new Position(xCoord, yCoord, zCoord, ForgeDirection.values()[orient]);
-		pos.moveForwards(1);
-		TileEntity tile = w.getBlockTileEntity((int) pos.x, (int) pos.y, (int) pos.z);
-		if (tile instanceof IInventory && !(tile instanceof TileEngine)) {
-	         if (PipeManager.canExtractItems(this, w, (int) pos.x, (int) pos.y, (int) pos.z))
-	            return true;
-		}
-		return false;
 	}
 
 	@Override
