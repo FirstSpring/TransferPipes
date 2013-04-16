@@ -12,8 +12,6 @@ public class PipeItemsRedstoneWood extends PipeItemsWood {
 		super(itemID);
 		// TODO 自動生成されたコンストラクター・スタブ
 	}
-	public int baseTexture = 2 * 16 + 0;
-	public int plainTexture = 2 * 16 + 1;
 	
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -24,7 +22,7 @@ public class PipeItemsRedstoneWood extends PipeItemsWood {
 	@Override
 	public int getIconIndex(ForgeDirection direction) {
 		if (direction == ForgeDirection.UNKNOWN)
-			return baseTexture;
+			return TransferPipes.iconProvider.rsBase;
 		else {
 			int metadata = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 
