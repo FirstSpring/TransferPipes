@@ -48,7 +48,7 @@ public class TransferPipesIconProvider implements IIconProvider {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister ir) {
-		if(registered)return;
+		//if(registered)return;
 		icons = new Icon[60];
 		icons[item] = regist(ir, "pipeItemsTransfer");
 		icons[itemR] = regist(ir, "pipeItemsTransfer_remote");
@@ -73,7 +73,7 @@ public class TransferPipesIconProvider implements IIconProvider {
 		icons[powR + 10] = regist(ir, "pipePowerDimTransfer_remote");
 		icons[powA + 10] = regist(ir, "pipePowerDimTransfer_anti");
 		icons[rsBase] = regist(ir, "pipeItemsRedstoneWood");
-		icons[rsSol] = regist(ir, "buildcraft:pipeAllWood_solid");
+		icons[rsSol] = ir.registerIcon("buildcraft:pipeAllWood_solid");
 		
 	}
 	
