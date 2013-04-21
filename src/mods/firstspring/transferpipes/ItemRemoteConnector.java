@@ -205,8 +205,8 @@ public class ItemRemoteConnector extends ItemBuildCraft implements IToolWrench {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void updateIcons(IconRegister ir){
-		iconIndex = ir.registerIcon("firstspring/transferpipes:remote_connector");
+	public void registerIcons(IconRegister ir){
+		itemIcon = ir.registerIcon("firstspring/transferpipes:remote_connector");
 	}
 
 }
