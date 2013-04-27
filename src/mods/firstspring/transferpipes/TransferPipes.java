@@ -36,30 +36,30 @@ import cpw.mods.fml.relauncher.SideOnly;
 @NetworkMod(channels = {"transferpipes"}, clientSideRequired=true, serverSideRequired=true, packetHandler = PacketHandler.class)
 public class TransferPipes{
 	@Instance("TransferPipes")
-	public static TransferPipes instance;
-	public static TransferPipesIconProvider iconProvider = new TransferPipesIconProvider();
+	protected static TransferPipes instance;
+	protected static TransferPipesIconProvider iconProvider = new TransferPipesIconProvider();
 	
 	//public final static PipeItemRenderer pipeItemRenderer = new PipeItemRenderer();
-	public static Item pipeItemsTransfer;
-	public static int pipeItemsTransferId;
-	public static Item pipeLiquidsTransfer;
-	public static int pipeLiquidsTransferId;
-	public static Item pipePowerTransfer;
-	public static int pipePowerTransferId;
-	public static Item pipeItemsDimTransfer;
-	public static int pipeItemsDimTransferId;
-	public static Item pipeLiquidsDimTransfer;
-	public static int pipeLiquidsDimTransferId;
-	public static Item pipePowerDimTransfer;
-	public static int pipePowerDimTransferId;
-	public static Item pipeItemsRedstoneWood;
-	public static int pipeItemsRedstoneWoodId;
-	public static Item remoteConnector;
-	public static int remoteConnectorId;
+	protected static Item pipeItemsTransfer;
+	protected static int pipeItemsTransferId;
+	protected static Item pipeLiquidsTransfer;
+	protected static int pipeLiquidsTransferId;
+	protected static Item pipePowerTransfer;
+	protected static int pipePowerTransferId;
+	protected static Item pipeItemsDimTransfer;
+	protected static int pipeItemsDimTransferId;
+	protected static Item pipeLiquidsDimTransfer;
+	protected static int pipeLiquidsDimTransferId;
+	protected static Item pipePowerDimTransfer;
+	protected static int pipePowerDimTransferId;
+	protected static Item pipeItemsRedstoneWood;
+	protected static int pipeItemsRedstoneWoodId;
+	protected static Item remoteConnector;
+	protected static int remoteConnectorId;
 	
-	public static boolean balanceMode;
-	public static boolean isDebug;
-	public static boolean enableInsertion;
+	protected static boolean balanceMode;
+	protected static boolean isDebug;
+	protected static boolean enableInsertion;
 	
 	
 	@PreInit
