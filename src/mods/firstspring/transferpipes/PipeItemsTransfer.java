@@ -26,6 +26,7 @@ import buildcraft.api.transport.IPipedItem;
 import buildcraft.api.transport.PipeManager;
 import buildcraft.core.EntityPassiveItem;
 import buildcraft.core.utils.Utils;
+import buildcraft.energy.TileEngine;
 import buildcraft.transport.IPipeTransportItemsHook;
 import buildcraft.transport.PipeTransportItems;
 import buildcraft.transport.TileGenericPipe;
@@ -74,11 +75,14 @@ public class PipeItemsTransfer extends PipeTransfer implements IPipeTransportIte
 				Position p = new Position(pos);
 				p.orientation = ForgeDirection.getOrientation(i);
 				p.moveForwards(1);
-				if(!((worldObj.getBlockTileEntity((int)p.x, (int)p.y, (int)p.z)) instanceof TileGenericPipe))
-					if(((PipeTransportItems) transport).canReceivePipeObjects(ForgeDirection.getOrientation(i), item)){
-						f.add(ForgeDirection.getOrientation(i));
-					}
-
+				TileEntity tile = worldObj.getBlockTileEntity((int)p.x, (int)p.y, (int)p.z);
+				if(tile instanceof TileEngine)
+					return possibleOrientations;
+				if(tile instanceof TileGenericPipe)
+					continue;
+				if(((PipeTransportItems) transport).canReceivePipeObjects(ForgeDirection.getOrientation(i), item)){
+					f.add(ForgeDirection.getOrientation(i));
+				}
 			}
 			if(!f.isEmpty())
 				return f;
