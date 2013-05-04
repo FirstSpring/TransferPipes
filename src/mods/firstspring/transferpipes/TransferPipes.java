@@ -58,6 +58,7 @@ public class TransferPipes{
 	protected static int remoteConnectorId;
 	
 	protected static boolean balanceMode;
+	protected static boolean cheatRecipe;
 	protected static boolean isDebug;
 	
 	@PreInit
@@ -85,6 +86,8 @@ public class TransferPipes{
 		balanceMode = prop.getBoolean(true);
 		prop = cfg.get(Configuration.CATEGORY_GENERAL, "isDebug", false);
 		isDebug = prop.getBoolean(true);
+		prop = cfg.get(Configuration.CATEGORY_GENERAL, "CheatRecipe", false);
+		cheatRecipe = prop.getBoolean(true);
 		cfg.save();
 		MinecraftForge.EVENT_BUS.register(this);
 		//preInitで登録しないと手持ちのアイテムのテクスチャが化ける
@@ -112,15 +115,21 @@ public class TransferPipes{
 		else{
 			craftbase = new ItemStack(Item.dyePowder, 1, 4);
 		}
-		GameRegistry.addShapelessRecipe(new ItemStack(pipeItemsTransfer), new Object[]{craftbase, BuildCraftTransport.pipeItemsGold});
-		GameRegistry.addShapelessRecipe(new ItemStack(pipeLiquidsTransfer), new Object[]{pipeItemsTransfer, BuildCraftTransport.pipeWaterproof});
-		GameRegistry.addShapelessRecipe(new ItemStack(pipeLiquidsTransfer), new Object[]{craftbase, BuildCraftTransport.pipeLiquidsGold});
-		GameRegistry.addShapelessRecipe(new ItemStack(pipePowerTransfer, 1), new Object[]{pipeItemsTransfer, Item.redstone});
-		GameRegistry.addShapelessRecipe(new ItemStack(pipePowerTransfer), new Object[]{craftbase, BuildCraftTransport.pipePowerGold});
-		GameRegistry.addShapelessRecipe(new ItemStack(pipeItemsDimTransfer, 1), new Object[]{Item.eyeOfEnder, pipeItemsTransfer});
-		GameRegistry.addShapelessRecipe(new ItemStack(pipeLiquidsDimTransfer, 1), new Object[]{Item.eyeOfEnder, pipeLiquidsTransfer});
-		GameRegistry.addShapelessRecipe(new ItemStack(pipeLiquidsDimTransfer, 1), new Object[]{pipeItemsDimTransfer, BuildCraftTransport.pipeWaterproof});
-		GameRegistry.addShapelessRecipe(new ItemStack(pipePowerDimTransfer, 1), new Object[]{pipeItemsDimTransfer, Item.redstone});
+		if(cheatRecipe){
+			GameRegistry.addShapedRecipe(new ItemStack(pipeItemsTransfer, 8), new Object[]{"BGB", 'B', craftbase, 'G', Block.glass});
+			GameRegistry.addShapedRecipe(new ItemStack(pipeLiquidsTransfer, 8), new Object[]{" W ", "BGB", 'W', BuildCraftTransport.pipeWaterproof, 'B', craftbase, 'G', Block.glass});
+			GameRegistry.addShapedRecipe(new ItemStack(pipePowerTransfer, 8), new Object[]{" R ", "BGB", 'R', Item.redstone, 'B', craftbase, 'G', Block.glass});
+		}else{
+			GameRegistry.addShapelessRecipe(new ItemStack(pipeItemsTransfer), new Object[]{craftbase, BuildCraftTransport.pipeItemsGold});
+			GameRegistry.addShapelessRecipe(new ItemStack(pipeLiquidsTransfer), new Object[]{pipeItemsTransfer, BuildCraftTransport.pipeWaterproof});
+			GameRegistry.addShapelessRecipe(new ItemStack(pipeLiquidsTransfer), new Object[]{craftbase, BuildCraftTransport.pipeLiquidsGold});
+			GameRegistry.addShapelessRecipe(new ItemStack(pipePowerTransfer), new Object[]{pipeItemsTransfer, Item.redstone});
+			GameRegistry.addShapelessRecipe(new ItemStack(pipePowerTransfer), new Object[]{craftbase, BuildCraftTransport.pipePowerGold});
+		}
+		GameRegistry.addShapelessRecipe(new ItemStack(pipeItemsDimTransfer), new Object[]{Item.eyeOfEnder, pipeItemsTransfer});
+		GameRegistry.addShapelessRecipe(new ItemStack(pipeLiquidsDimTransfer), new Object[]{Item.eyeOfEnder, pipeLiquidsTransfer});
+		GameRegistry.addShapelessRecipe(new ItemStack(pipeLiquidsDimTransfer), new Object[]{pipeItemsDimTransfer, BuildCraftTransport.pipeWaterproof});
+		GameRegistry.addShapelessRecipe(new ItemStack(pipePowerDimTransfer), new Object[]{pipeItemsDimTransfer, Item.redstone});
 		GameRegistry.addShapelessRecipe(new ItemStack(pipePowerDimTransfer), new Object[]{Item.eyeOfEnder, pipePowerTransfer});
 		GameRegistry.addRecipe(new ItemStack(pipeItemsRedstoneWood, 8), new Object[]{" E ", "RGR", 
 																					Character.valueOf('E'), new ItemStack(BuildCraftEnergy.engineBlock, 1, 0), 
