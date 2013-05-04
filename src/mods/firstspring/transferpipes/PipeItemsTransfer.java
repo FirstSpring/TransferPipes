@@ -69,26 +69,25 @@ public class PipeItemsTransfer extends PipeTransfer implements IPipeTransportIte
 	@Override
 	public LinkedList<ForgeDirection> filterPossibleMovements(LinkedList<ForgeDirection> possibleOrientations, Position pos,
 			IPipedItem item) {
-		if(TransferPipes.enableInsertion){
-			LinkedList<ForgeDirection> f = new LinkedList();
-			for(int i = 0; i < 6; i++){
-				Position p = new Position(pos);
-				p.orientation = ForgeDirection.getOrientation(i);
-				p.moveForwards(1);
-				TileEntity tile = worldObj.getBlockTileEntity((int)p.x, (int)p.y, (int)p.z);
-				if(tile instanceof TileEngine)
-					return possibleOrientations;
-				if(tile instanceof TileGenericPipe)
-					continue;
-				if(((PipeTransportItems) transport).canReceivePipeObjects(ForgeDirection.getOrientation(i), item)){
-					f.add(ForgeDirection.getOrientation(i));
-				}
+		LinkedList<ForgeDirection> f = new LinkedList();
+		for(int i = 0; i < 6; i++){
+			Position p = new Position(pos);
+			p.orientation = ForgeDirection.getOrientation(i);
+			p.moveForwards(1);
+			TileEntity tile = worldObj.getBlockTileEntity((int)p.x, (int)p.y, (int)p.z);
+			if(tile instanceof TileEngine)
+				return possibleOrientations;
+			if(tile instanceof TileGenericPipe)
+				continue;
+			if(((PipeTransportItems) transport).canReceivePipeObjects(ForgeDirection.getOrientation(i), item)){
+				f.add(ForgeDirection.getOrientation(i));
 			}
-			if(!f.isEmpty())
-				return f;
 		}
+		if(!f.isEmpty())
+			return f;
 		return possibleOrientations;
 	}
+	
 	//木パイプよりコピペ
 	@Override
 	public void doWork() {

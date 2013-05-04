@@ -59,8 +59,6 @@ public class TransferPipes{
 	
 	protected static boolean balanceMode;
 	protected static boolean isDebug;
-	protected static boolean enableInsertion;
-	
 	
 	@PreInit
 	public void loadConfiguration(FMLPreInitializationEvent evt){
@@ -87,8 +85,6 @@ public class TransferPipes{
 		balanceMode = prop.getBoolean(true);
 		prop = cfg.get(Configuration.CATEGORY_GENERAL, "isDebug", false);
 		isDebug = prop.getBoolean(true);
-		prop = cfg.get(Configuration.CATEGORY_GENERAL, "Enable_Insertion_Function", false);
-		enableInsertion = prop.getBoolean(true);
 		cfg.save();
 		MinecraftForge.EVENT_BUS.register(this);
 		//preInitで登録しないと手持ちのアイテムのテクスチャが化ける
