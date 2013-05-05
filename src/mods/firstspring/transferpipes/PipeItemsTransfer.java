@@ -37,6 +37,7 @@ public class PipeItemsTransfer extends PipeTransfer implements IPipeTransportIte
 
 	private IPowerProvider powerProvider;
 	public boolean receive = false;
+	public int powered;
 	public PipeItemsTransfer(int itemID) {
 		super(new PipeTransportItems(), itemID);
 		((PipeTransportItems) transport).allowBouncing = true;
@@ -64,8 +65,13 @@ public class PipeItemsTransfer extends PipeTransfer implements IPipeTransportIte
 	public IPowerProvider getPowerProvider() {
 		return powerProvider;
 	}
-
-
+	
+	@Override
+	public void updateEntity(){
+		super.updateEntity();
+		powered--;
+	}
+	
 	@Override
 	public LinkedList<ForgeDirection> filterPossibleMovements(LinkedList<ForgeDirection> possibleOrientations, Position pos,
 			IPipedItem item) {
@@ -76,7 +82,8 @@ public class PipeItemsTransfer extends PipeTransfer implements IPipeTransportIte
 			p.moveForwards(1);
 			TileEntity tile = worldObj.getBlockTileEntity((int)p.x, (int)p.y, (int)p.z);
 			if(tile instanceof TileEngine)
-				return possibleOrientations;
+				if(powered > 0)
+					return possibleOrientations;
 			if(tile instanceof TileGenericPipe)
 				continue;
 			if(((PipeTransportItems) transport).canReceivePipeObjects(ForgeDirection.getOrientation(i), item)){
@@ -93,6 +100,7 @@ public class PipeItemsTransfer extends PipeTransfer implements IPipeTransportIte
 	public void doWork() {
 		if (powerProvider.getEnergyStored() <= 0)
 			return;
+		powered = 10;
 
 		World w = worldObj;
 
