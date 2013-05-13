@@ -1,7 +1,7 @@
 package mods.firstspring.transferpipes;
 
 import net.minecraft.tileentity.TileEntity;
-import buildcraft.BuildCraftTransport;
+import net.minecraftforge.common.ForgeDirection;
 import buildcraft.transport.TileGenericPipe;
 import buildcraft.transport.pipes.PipeLogicWood;
 
@@ -9,10 +9,7 @@ import buildcraft.transport.pipes.PipeLogicWood;
 
 public class PipeLogicTransfer extends PipeLogicWood {
 
-	@Override
 	public boolean isPipeConnected(TileEntity tile) {
-		if (BuildCraftTransport.alwaysConnectPipes)
-			return super.isPipeConnected(tile);
 		PipeTransfer pipefrom = (PipeTransfer)this.container.pipe;
 		PipeTransfer pipeto = null;
 		if(tile instanceof TileGenericPipe){
@@ -25,6 +22,11 @@ public class PipeLogicTransfer extends PipeLogicWood {
 		if(pipeto == null)
 			return true;
 		return !pipefrom.antiConnect || !pipeto.antiConnect;
+	}
+
+	@Override
+	public boolean canPipeConnect(TileEntity tile, ForgeDirection side) {
+		return isPipeConnected(tile);
 	}
 
 }
