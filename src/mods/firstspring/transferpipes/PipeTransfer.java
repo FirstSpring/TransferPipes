@@ -58,7 +58,7 @@ public abstract class PipeTransfer extends Pipe {
 			for(PipeTransfer pipeBuf : pipeList)
 				pipeBuf.isConnectUpdate = true;
 			this.container.scheduleNeighborChange();
-			return true;
+			return logic.blockActivated(entityplayer);
 		}
 		return false;
 	}

@@ -9,6 +9,7 @@
 package mods.firstspring.transferpipes;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
@@ -50,8 +51,12 @@ public class PipeLiquidsTransfer extends PipeTransfer implements IPipeTransportL
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
+		if(worldObj.isRemote)
+			return;
 		if (broadcastRedstone || worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord) && !remoteMode)
 			liquidToExtract = LiquidContainerRegistry.BUCKET_VOLUME;
+		World w = worldObj;
+
 		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 
 		if (liquidToExtract > 0 && meta < 6) {
